@@ -19,7 +19,17 @@ st.set_page_config(
 # ==========================================
 st.markdown("""
     <style>
-    /* 1. Typographie Apple et Arrière-plan (Dark Mode iOS) */
+    /* 1. Masquer absolument tout le "bruit" Streamlit, GitHub et les barres d'outils */
+    header {visibility: hidden !important; display: none !important;}
+    #MainMenu {visibility: hidden !important; display: none !important;}
+    footer {visibility: hidden !important; display: none !important;}
+    [data-testid="stToolbar"] {visibility: hidden !important; display: none !important;}
+    [data-testid="stDecoration"] {visibility: hidden !important; display: none !important;}
+    [data-testid="stStatusWidget"] {visibility: hidden !important; display: none !important;}
+    div[class^='viewerBadge'] {visibility: hidden !important; display: none !important;}
+    .stApp > header {background: transparent !important;}
+    
+    /* Typographie Apple et Arrière-plan (Dark Mode iOS) */
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
     
     html, body, [class*="css"] {
@@ -32,11 +42,6 @@ st.markdown("""
                           radial-gradient(circle at 85% 30%, rgba(10, 15, 30, 0.8), transparent 50%);
         color: #f5f5f7;
     }
-
-    /* Masquer les éléments par défaut de Streamlit pour un look App Native */
-    header {visibility: hidden;}
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
 
     /* 2. Customisation de la barre latérale (iOS Frosted Glass) */
     section[data-testid="stSidebar"] {
