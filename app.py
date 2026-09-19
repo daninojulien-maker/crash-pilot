@@ -19,22 +19,21 @@ st.set_page_config(
 # ==========================================
 st.markdown("""
     <style>
-    /* 1. Masquer absolument tout le "bruit" Streamlit, GitHub et les barres d'outils */
-    header {visibility: hidden !important; display: none !important;}
-    #MainMenu {visibility: hidden !important; display: none !important;}
-    footer {visibility: hidden !important; display: none !important;}
-    [data-testid="stToolbar"] {visibility: hidden !important; display: none !important;}
-    [data-testid="stDecoration"] {visibility: hidden !important; display: none !important;}
-    [data-testid="stStatusWidget"] {visibility: hidden !important; display: none !important;}
-    div[class^='viewerBadge'] {visibility: hidden !important; display: none !important;}
-    .stApp > header {background: transparent !important;}
+    /* 1. Garder le menu mobile et supprimer définitivement les logos */
     
-    /* Typographie Apple et Arrière-plan (Dark Mode iOS) */
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    /* Rendre l'en-tête transparent pour conserver le bouton menu (☰) sur téléphone */
+    header { background: transparent !important; box-shadow: none !important; }
     
-    html, body, [class*="css"] {
-        font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif !important;
-    }
+    /* Cacher les boutons de base en haut à droite (GitHub, Déployer, etc.) */
+    [data-testid="stToolbar"] { visibility: hidden !important; display: none !important; }
+    #MainMenu { visibility: hidden !important; display: none !important; }
+    footer { visibility: hidden !important; display: none !important; }
+    
+    /* Détruire les logos persistants en bas à droite */
+    .stDeployButton { visibility: hidden !important; display: none !important; }
+    [data-testid="stAppDeployButton"] { visibility: hidden !important; display: none !important; }
+    div[class^='viewerBadge'] { visibility: hidden !important; display: none !important; }
+    [data-testid="stStatusWidget"] { visibility: hidden !important; display: none !important; }
     
     .stApp {
         background-color: #000000;
