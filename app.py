@@ -19,21 +19,12 @@ st.set_page_config(
 # ==========================================
 st.markdown("""
     <style>
-    /* 1. Garder le menu mobile et supprimer définitivement les logos */
+    /* 1. Typographie Apple et Arrière-plan (Dark Mode iOS) */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
     
-    /* Rendre l'en-tête transparent pour conserver le bouton menu (☰) sur téléphone */
-    header { background: transparent !important; box-shadow: none !important; }
-    
-    /* Cacher les boutons de base en haut à droite (GitHub, Déployer, etc.) */
-    [data-testid="stToolbar"] { visibility: hidden !important; display: none !important; }
-    #MainMenu { visibility: hidden !important; display: none !important; }
-    footer { visibility: hidden !important; display: none !important; }
-    
-    /* Détruire les logos persistants en bas à droite */
-    .stDeployButton { visibility: hidden !important; display: none !important; }
-    [data-testid="stAppDeployButton"] { visibility: hidden !important; display: none !important; }
-    div[class^='viewerBadge'] { visibility: hidden !important; display: none !important; }
-    [data-testid="stStatusWidget"] { visibility: hidden !important; display: none !important; }
+    html, body, [class*="css"] {
+        font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif !important;
+    }
     
     .stApp {
         background-color: #000000;
@@ -41,6 +32,11 @@ st.markdown("""
                           radial-gradient(circle at 85% 30%, rgba(10, 15, 30, 0.8), transparent 50%);
         color: #f5f5f7;
     }
+
+    /* Masquer les éléments par défaut de Streamlit pour un look App Native */
+    header {visibility: hidden;}
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
 
     /* 2. Customisation de la barre latérale (iOS Frosted Glass) */
     section[data-testid="stSidebar"] {
@@ -186,40 +182,42 @@ if 'current_target' not in st.session_state:
     st.session_state.current_target = 2.00
 
 # ==========================================
-# MOTEUR ALGORITHMIQUE (V12 : DOUBLE CHECK)
+# MOTEUR ALGORITHMIQUE (V13 : DYNAMIQUE)
 # ==========================================
 def analyze_market_2x_strict(history):
     n = len(history)
-    if n < 3:
-        return "Calibrage en cours. Saisissez au moins 3 tours.", 2.00, "yellow"
+    
+    # Étape 1 : Calibrage
+    if n < 2:
+        return "Calibrage en cours. Saisissez au moins 2 tours.", 2.00, "yellow"
 
-    last_cote = history[-1]
+    # Calcul des variables clés
+    dernier_tour = history[-1]
+    avant_dernier = history[-2]
+    derniers_tours = history[-3:] if n >= 3 else history[-2:]
+    moyenne_recente = sum(derniers_tours) / len(derniers_tours)
 
-    if n >= 4:
-        if all(x < 1.20 for x in history[-4:]):
-            return "Alerte : Chute anormale détectée. Ne jouez pas.", 2.00, "red"
+    # Étape 2 : Analyse de Sécurité (Danger Rouge)
+    if n >= 3 and all(x < 1.30 for x in history[-3:]):
+        return "Alerte : Chute persistante détectée. Ne jouez pas.", 2.00, "red"
+        
+    if moyenne_recente < 1.6 and dernier_tour < 2.0:
+        return "Marché baissier. Attendez une stabilisation.", 2.00, "red"
 
-    if last_cote >= 10.0:
+    # Étape 3 : Analyse des Corrections (Prudence Jaune)
+    if dernier_tour >= 8.0:
         return "Correction anticipée suite à un pic. Patientez.", 2.00, "yellow"
 
-    tours_bas_consecutifs = 0
-    for cote in reversed(history):
-        if cote >= 2.00:
-            break
-        tours_bas_consecutifs += 1
-
-    if tours_bas_consecutifs >= 3:
-        derniere_cote = history[-1]
-        avant_derniere = history[-2]
+    # Étape 4 : Détection d'Opportunités (Action Verte)
+    if moyenne_recente >= 2.2 or dernier_tour >= 3.5:
+        return "Tendance haussière forte. Opportunité d'entrée à 2.00x.", 2.00, "green"
         
-        if derniere_cote > avant_derniere:
-            return f"Signal validé. Volatilité ascendante après {tours_bas_consecutifs} crashs. Entrez à 2.00x.", 2.00, "green"
-        elif tours_bas_consecutifs >= 4:
-            return f"Épuisement statistique de la série. Probabilité de hausse optimale. Entrez à 2.00x.", 2.00, "green"
-        else:
-            return f"Instabilité : chute persistante malgré {tours_bas_consecutifs} crashs bas. Laissez passer.", 2.00, "yellow"
+    if dernier_tour >= 2.0 and avant_dernier < 2.0:
+        return "Rebond validé. Probabilité de maintien. Entrez à 2.00x.", 2.00, "green"
+        
+    # Étape 5 : Comportement par défaut
+    return "Marché indécis. Conservez votre capital.", 2.00, "yellow"
 
-    return "Marché neutre. Conservez votre capital.", 2.00, "yellow"
 
 # ==========================================
 # INTERFACE UTILISATEUR (SIDEBAR)
